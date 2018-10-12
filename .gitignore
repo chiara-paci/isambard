@@ -1,0 +1,6 @@
+*.pyc
+*~
+*.dia.autosave
+*.json
+old/*
+var/db/*
