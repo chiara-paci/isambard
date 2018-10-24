@@ -3,4 +3,5 @@
 *.dia.autosave
 *.json
 old/*
-var/db/*
+var/isambard/*
+sources/*

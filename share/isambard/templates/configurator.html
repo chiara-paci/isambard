@@ -1,0 +1,1081 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<article id="configurator">
+
+    <nav>
+    <label for="file_name_id">file name:</label> <input type="text" id="file_name_id" name="file_name"/>
+    <a id="download">download configuration</a>
+    </nav>
+    
+    <div class="tabs dashboard">
+    
+      <!-- -----------------------------
+	   labels
+	-->
+      <ul>
+	<li><a href="#parameters">parameters</a></li>
+	<li><a href="#sources">sources</a></li>
+	<li><a href="#destinations">destinations</a></li>
+	<li><a href="#normalizer">normalizer</a></li>
+      </ul>
+      
+      <!-- ----------------------------
+	   panels 
+	-->
+      
+      <!-- parameters -->
+      <section class="panel" id="parameters">
+	<h1>Parameters</h1>
+	
+	<div class="form">
+	  <table id="parameters-table">
+	    {% for field in configurator.parameters %}
+	    <tbody><tr>
+		<th class="right">{{ field.label }}</th>
+		<td>{{ field.widget }}</td>
+		<td>{% if field.description %}{{ field.description }}{% endif %}</td>
+	    </tr></tbody>
+	    {% endfor %}
+	  </table>
+	</div>
+	
+      </section>
+      
+      <!-- sources -->
+      <section class="panel" id="sources" data-object_type="source">
+	<h1>Sources</h1>
+
+	<nav><a href="" class="open-dialog" data-dialog_id="add-source">Add source</a></nav>
+
+	<div class="accordion" id="accordion-source">
+
+	  {% for source in configurator.sources %}
+	  <section id="source-{{ loop.index0 }}" class="objectarea">
+	    <h3>[{{ loop.index0 }}] 
+	      <span id="source-{{ loop.index0 }}-label">{{ source["label"] }}</span>
+	      <span id="source-{{ loop.index0 }}-class">({{ source["class"] }})</span>
+	    </h3>
+	    <div class="form">
+	      <nav>
+		<a href="" class="clone" 
+		   data-target_id="source-{{ loop.index0 }}">Clone</a>
+		<a href="" class="delete" 
+		   data-target_id="source-{{ loop.index0 }}">Delete</a>
+	      </nav>
+	      <table id="source-{{ loop.index0 }}-table">
+		{% set num = loop.index0 %}
+		{% for field in source["form"] %}
+		<tbody><tr>
+		    <th class="right">{{ field.label }}</th>
+		    {% if field.name == "label" %}
+		    <td class="trackchange" data-target_id="source-{{ num }}-label">{{ field.widget }}</td>
+		    {% else %}
+		    <td>{{ field.widget }}</td>
+		    {% endif %}
+		    <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+		</tr></tbody>
+		{% endfor %}
+	      </table>
+	    </div>
+	  </section>
+	  {% endfor %}
+	</div>
+
+	<dialog id="add-source" class="add" title="Add source">
+	  <div class="form">
+	    <table>
+	      <tbody>
+		<tr>
+		  <th><label for="">Class</label></th>
+		  <td>
+		    <select name="class" id="class_id">
+		      {% for src in configurator.source_list %}
+		      <option value="{{ src }}">{{ src }}</option>
+		      {% endfor %}
+		    </select>
+		  </td>
+		</tr>
+	      </tbody>
+	      <tbody>
+		<tr>
+		  <th><label for="">Label</label></th>
+		  <td><input type="text" name="label" id="label_id"/></td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </div>
+
+	</dialog>
+
+      </section><!-- end sources -->
+
+      <!-- destinations -->
+      <section class="panel" id="destinations" data-object_type="destination">
+	<h1>Destinations</h1>
+
+	<nav><a href="" class="open-dialog" data-dialog_id="add-destination">Add destination</a></nav>
+
+	<div class="accordion" id="accordion-destination">
+
+	  {% for destination in configurator.destinations %}
+	  <section id="destination-{{ loop.index0 }}" class="objectarea">
+	    <h3>[{{ loop.index0 }}] 
+	      <span id="destination-{{ loop.index0 }}-label">{{ destination["label"] }}</span>
+	      <span id="destination-{{ loop.index0 }}-class">({{ destination["class"] }})</span>
+	    </h3>
+	    <div class="form">
+	      <nav>
+		<a href="" class="clone" 
+		   data-target_id="destination-{{ loop.index0 }}">Clone</a>
+		<a href="" class="delete" 
+		   data-target_id="destination-{{ loop.index0 }}">Delete</a>
+	      </nav>
+	      <table id="destination-{{ loop.index0 }}-table">
+		{% set num = loop.index0 %}
+		{% for field in destination["form"] %}
+		<tbody><tr>
+		    <th class="right">{{ field.label }}</th>
+		    {% if field.name == "label" %}
+		    <td class="trackchange" data-target_id="destination-{{ num }}-label">
+		      {{ field.widget }}</td>
+		    {% else %}
+		    <td>{{ field.widget }}</td>
+		    {% endif %}
+		    <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+		</tr></tbody>
+		{% endfor %}
+	      </table>
+	    </div>
+	  </section>
+	  {% endfor %}
+	</div>
+
+	<dialog id="add-destination" 
+		class="add"
+		title="Add destination">
+
+	  <div class="form">
+	    <table>
+	      <tbody>
+		<tr>
+		  <th><label for="">Class</label></th>
+		  <td>
+		    <select name="class" id="class_id">
+		      {% for src in configurator.destination_list %}
+		      <option value="{{ src }}">{{ src }}</option>
+		      {% endfor %}
+		    </select>
+		  </td>
+		</tr>
+	      </tbody>
+	      <tbody>
+		<tr>
+		  <th><label for="">Label</label></th>
+		  <td><input type="text" name="label" id="label_id"/></td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </div>
+
+	</dialog>
+
+      </section><!-- end destinations -->
+      
+      <!-- normalizer -->
+      <section class="panel"  id="normalizer" data-object_type="normfilter">
+	<h1>Normalizer</h1>
+
+	<nav><a href="" class="open-main-dialog" data-dialog_id="add-normfilter">Add filter</a></nav>
+
+	<div class="main-accordion" id="accordion-normalizer">
+
+	  {% for normfilter in configurator.filters %}
+	  {% set filter_loop = loop %}
+	  <section id="normfilter-{{ filter_loop.index0 }}" class="filterarea" 
+		   data-object_type="block" data-filter_num="{{ filter_loop.index0 }}">
+	    <h3>[{{ filter_loop.index0 }}] 
+	      <span id="normfilter-{{ filter_loop.index0 }}-label">{{ normfilter["label"] }}</span>
+	    </h3>
+
+	    <div>
+	      <div class="form">
+		<nav>
+		  <a href="" class="main-clone" 
+		     data-target_id="normfilter-{{ filter_loop.index0 }}">Clone</a>
+		  <a href="" class="main-delete" 
+		     data-target_id="normfilter-{{ filter_loop.index0 }}">Delete</a>
+		</nav>
+		<table class="baseform" id="normfilter-{{ filter_loop.index0 }}-table">
+		  
+		  <tbody><tr>
+		      <th class="right"  style="width:20%">{{ normfilter["base_form"][0].label }}</th>
+		      <td colspan="3" class="trackchange" data-target_id="normfilter-{{ loop.index0 }}-label">
+			{{ normfilter["base_form"][0].widget }}</td>
+		  </tr></tbody>
+		  <tbody><tr>
+		      <th class="right" style="width:20%">{{ normfilter["base_form"][1].label }}</th>
+		      <td colspan="3">{{ normfilter["base_form"][1].widget }}</td>
+		  </tr></tbody>
+		  
+		  <tbody>
+		    <tr>
+		      <th class="center" colspan="2" style="width:50%">{{ normfilter["base_form"][2].label }}</th>
+		      <th class="center" colspan="2" style="width:50%">{{ normfilter["base_form"][3].label }}</th>
+		    </tr>
+		    <tr>
+		      <td class="center" colspan="2" style="width:50%">{{ normfilter["base_form"][2].widget }}</td>
+		      <td class="center" colspan="2" style="width:50%">{{ normfilter["base_form"][3].widget }}</td>
+		    </tr>
+		  </tbody>
+		  
+		</table>
+	      </div>
+	      
+	      <nav><a href="" class="open-dialog" data-dialog_id="add-block-{{ filter_loop.index0 }}">
+		  Add block</a></nav>
+	      
+	      <div class="accordion" id="accordion-block-{{ filter_loop.index0 }}">
+		{% for block in normfilter["filter"] %}
+		<section id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}" class="objectarea">
+		  <h3>[{{ filter_loop.index0 }}.{{ loop.index0 }}] 
+		    <span id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}-label">{{ block["label"] }}</span>
+		    <span id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}-class">({{ block["class"] }})</span>
+		  </h3>
+		  <div class="form">
+		    <nav>
+		      <a href="" class="clone" 
+			 data-target_id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}">Clone</a>
+		      <a href="" class="delete" 
+			 data-target_id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}">Delete</a>
+		    </nav>
+		    <table id="block-{{ filter_loop.index0 }}-{{ loop.index0 }}-table">
+		      {% set num = loop.index0 %}
+		      {% for field in block["form"] %}
+		      <tbody><tr>
+			  <th class="right">{{ field.label }}</th>
+			  {% if field.name == "label" %}
+			  <td class="trackchange" 
+			      data-target_id="block-{{ filter_loop.index0 }}-{{ num }}-label">
+			    {{ field.widget }}</td>
+			  {% else %}
+			  <td>{{ field.widget }}</td>
+			  {% endif %}
+			  <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+		      </tr></tbody>
+		      {% endfor %}
+		    </table>
+		  </div>
+		</section>
+		{% endfor %}
+	      </div>
+	    </div>
+
+	  <dialog id="add-block-{{ filter_loop.index0 }}" class="add" title="Add block">
+	    <div class="form">
+	      <table>
+		<tbody>
+		  <tr>
+		    <th><label for="">Class</label></th>
+		    <td>
+		      <select name="class" id="class_id">
+			{% for src in configurator.block_list %}
+			<option value="{{ src }}">{{ src }}</option>
+			{% endfor %}
+		      </select>
+		    </td>
+		  </tr>
+		</tbody>
+		<tbody>
+		  <tr>
+		    <th><label for="">Label</label></th>
+		    <td><input type="text" name="label" id="label_id"/></td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </div>
+	    
+	  </dialog>
+	  </section>
+
+	  {% endfor %}
+
+	</div><!-- mainaccordion -->
+
+
+	<dialog id="add-normfilter" class="main-add" title="Add filter">
+	  <div class="form">
+	    <table>
+	      <tbody>
+		<tr>
+		  <th><label for="">Label</label></th>
+		  <td><input type="text" name="label" id="label_id"/></td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </div>
+
+	</dialog>
+
+
+      </section><!-- normalizer -->
+      
+      
+    </div>
+
+</article>
+
+
+<div id="templates">
+
+  {% for cl in configurator.source_list %}
+  <section id="source-{{ configurator.source_classes[cl]['class']|replace(".","__") }}" class="objectarea">
+    <h3>[%%num%%] 
+      <span id="source-%%num%%-label">%%label%%</span>
+      <span id="source-%%num%%-class">({{ configurator.source_classes[cl]["class"] }})</span>
+    </h3>
+    <div class="form">
+      <nav>
+	<a href="" class="clone" data-target_id="source-%%num%%">Clone</a>
+	<a href="" class="delete" data-target_id="source-%%num%%">Delete</a>
+      </nav>
+      <table id="source-%%num%%-table">
+	<tbody><tr>
+	    <th class="right">{{ configurator.label_field.label }}</th>
+	    <td>{{ configurator.label_field.widget }}</td>
+	    <td>{% if configurator.label_field.description %}
+	      {{ configurator.label_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	<tbody><tr>
+	    <th class="right">{{ configurator.source_class_field.label }}</th>
+	    <td>{{ configurator.source_class_field.widget }}</td>
+	    <td>{% if configurator.source_class_field.description %}
+	      {{ configurator.source_class_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	{% for field in configurator.source_classes[cl]["fields"] %}
+	<tbody><tr>
+	    <th class="right">{{ field.label }}</th>
+	    {% if field.name == "label" %}
+	    <td class="trackchange" 
+		data-target_id="source-%%num%%-label">
+	      {{ field.widget }}</td>
+	    {% else %}
+	    <td>{{ field.widget }}</td>
+	    {% endif %}
+	    <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+	</tr></tbody>
+	{% endfor %}
+      </table>
+    </div>
+  </section>
+  {% endfor %}
+
+
+  {% for cl in configurator.destination_list %}
+  <section id="destination-{{ configurator.destination_classes[cl]['class']|replace(".","__") }}" class="objectarea">
+    <h3>[%%num%%] 
+      <span id="destination-%%num%%-label">%%label%%</span>
+      <span id="destination-%%num%%-class">({{ configurator.destination_classes[cl]["class"] }})</span>
+    </h3>
+    <div class="form">
+      <nav>
+	<a href="" class="clone" data-target_id="destination-%%num%%">Clone</a>
+	<a href="" class="delete" data-target_id="destination-%%num%%">Delete</a>
+      </nav>
+      <table id="destination-%%num%%-table">
+	<tbody><tr>
+	    <th class="right">{{ configurator.label_field.label }}</th>
+	    <td>{{ configurator.label_field.widget }}</td>
+	    <td>{% if configurator.label_field.description %}
+	      {{ configurator.label_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	<tbody><tr>
+	    <th class="right">{{ configurator.destination_class_field.label }}</th>
+	    <td>{{ configurator.destination_class_field.widget }}</td>
+	    <td>{% if configurator.destination_class_field.description %}
+	      {{ configurator.destination_class_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	{% for field in configurator.destination_classes[cl]["fields"] %}
+	<tbody><tr>
+	    <th class="right">{{ field.label }}</th>
+	    {% if field.name == "label" %}
+	    <td class="trackchange" 
+		data-target_id="destination-%%num%%-label">
+	      {{ field.widget }}</td>
+	    {% else %}
+	    <td>{{ field.widget }}</td>
+	    {% endif %}
+	    <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+	</tr></tbody>
+	{% endfor %}
+      </table>
+    </div>
+  </section>
+  {% endfor %}
+
+  <section id="normfilter-template" class="filterarea" data-object_type="block"  data-filter_num="%%num%%">
+    <h3>[%%num%%] 
+      <span id="normfilter-%%num%%-label">%%label%%</span>
+    </h3>
+
+    <div>
+      <div class="form">
+	<nav>
+	  <a href="" class="main-clone" 
+	     data-target_id="normfilter-%%num%%">Clone</a>
+	  <a href="" class="main-delete" 
+	     data-target_id="normfilter-%%num%%">Delete</a>
+	</nav>
+	<table class="baseform" id="normfilter-%%num%%-table">
+	  
+	  <tbody><tr>
+	      <th class="right"  style="width:20%">{{ configurator.label_field.label }}</th>
+	      <td colspan="3" class="trackchange" 
+		  data-target_id="normfilter-%%num%%-label">{{ configurator.label_field.widget }}</td>
+	  </tr></tbody>
+	  <tbody><tr>
+	      <th class="right" style="width:20%">{{ configurator.output_data_collection_class_field.label }}</th>
+	      <td colspan="3">{{ configurator.output_data_collection_class_field.widget }}</td>
+	  </tr></tbody>
+	  
+	  <tbody>
+	    <tr>
+	      <th class="center" colspan="2" style="width:50%">{{ configurator.source_list_field.label }}</th>
+	      <th class="center" colspan="2" style="width:50%">{{ configurator.destination_list_field.label }}</th>
+	    </tr>
+	    <tr>
+	      <td class="center" colspan="2" style="width:50%">{{ configurator.source_list_field.widget }}</td>
+	      <td class="center" colspan="2" style="width:50%">{{ configurator.destination_list_field.widget }}</td>
+	    </tr>
+	  </tbody>
+	  
+	</table>
+      </div>
+      
+      <nav><a href="" class="open-dialog" data-dialog_id="add-block-%%num%%">Add block</a></nav>
+      
+      <div class="accordion" id="accordion-block-%%num%%"></div>
+    </div>
+    <dialog id="add-block-%%num%%" class="add" title="Add block">
+      <div class="form">
+	<table>
+	  <tbody>
+	    <tr>
+	      <th><label for="">Class</label></th>
+	      <td>
+		<select name="class" id="class_id">
+		  {% for src in configurator.block_list %}
+		  <option value="{{ src }}">{{ src }}</option>
+		  {% endfor %}
+		</select>
+	      </td>
+	    </tr>
+	  </tbody>
+	  <tbody>
+	    <tr>
+	      <th><label for="">Label</label></th>
+	      <td><input type="text" name="label" id="label_id"/></td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+      
+    </dialog>
+  </section><!-- normfilter template -->
+
+  {% for cl in configurator.block_list %}
+  <section id="block-{{ configurator.block_classes[cl]['class']|replace(".","__") }}" class="objectarea">
+    <h3>[%%filternum%%.%%num%%] 
+      <span id="block-%%filternum%%-%%num%%-label">%%label%%</span>
+      <span id="block-%%filternum%%-%%num%%-class">({{ configurator.block_classes[cl]["class"] }})</span>
+    </h3>
+    <div class="form">
+      <nav>
+	<a href="" class="clone" 
+	   data-target_id="block-%%filternum%%-%%num%%">Clone</a>
+	<a href="" class="delete" 
+	   data-target_id="block-%%filternum%%-%%num%%">Delete</a>
+      </nav>
+      <table id="block-%%filternum%%-%%num%%-table">
+	<tbody><tr>
+	    <th class="right">{{ configurator.label_field.label }}</th>
+	    <td>{{ configurator.label_field.widget }}</td>
+	    <td>{% if configurator.label_field.description %}
+	      {{ configurator.label_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	<tbody><tr>
+	    <th class="right">{{ configurator.block_class_field.label }}</th>
+	    <td>{{ configurator.block_class_field.widget }}</td>
+	    <td>{% if configurator.block_class_field.description %}
+	      {{ configurator.block_class_field.description }}{% endif %}</td>
+	</tr></tbody>
+
+	{% for field in configurator.block_classes[cl]["fields"] %}
+	<tbody><tr>
+	    <th class="right">{{ field.label }}</th>
+	    {% if field.name == "label" %}
+	    <td class="trackchange" 
+		data-target_id="block-%%filternum%%-%%num%%-label">
+	      {{ field.widget }}</td>
+	    {% else %}
+	    <td>{{ field.widget }}</td>
+	    {% endif %}
+
+	    <td>{{ field.widget }}</td>
+	    <td>{% if field.description %}{{ field.description }}{% endif %}</td>
+	</tr></tbody>
+	{% endfor %}
+      </table>
+    </div>
+  </section>
+  {% endfor %}
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+/*** MAIN LOGIC ***/
+
+$(".error").hide();
+
+function Panel(panel_id) {
+    this.panel=$("#"+panel_id);
+    this.object_type=this.panel.data("object_type");
+    this.accordion=this.panel.find(".accordion").first();
+    this.section_ind=this.accordion.children().length-1;
+};
+
+Panel.prototype = {
+    new_ind: function(){
+	this.section_ind+=1;
+	return this.section_ind;
+    },
+    _new_section_html: function(template,section_id,num,label){
+	var html=template.html();
+	html=html
+	    .replace(/%%num%%/g,num)
+	    .replace(/%%label%%/g,label);
+	return '<section id="'+section_id+'" class="objectarea">'+html+'</section>';
+    },
+    _clone_section: function(old_section,num,new_label){
+	var html=old_section.html();
+	var new_section_id=this.object_type+'-'+num;
+	var old_section_id=old_section.attr('id'); 
+	var old_num=old_section_id.split("-")[1];
+
+	var regex1 = new RegExp("\\[" + old_num + "\\]", "g");
+	var regex2 = new RegExp(old_section_id, "g");
+
+	html=html
+	    .replace(regex1,"["+num+"]")
+	    .replace(regex2,new_section_id);
+	html='<section id="'+new_section_id+'" class="objectarea">'+html+'</section>';
+	var cl_obj=$(html);
+
+	cl_obj.find("#label_id").val(new_label);
+	cl_obj.find("#"+new_section_id+"-label").html(new_label);
+
+	cl_obj.find(".delete").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    $("#"+target_id).remove();
+	    widget.accordion.accordion("refresh");
+	});
+
+	cl_obj.find(".trackchange").each(function(index){
+	    var target_id=$(this).data("target_id");
+	    $(this).find("input").change(function(event){
+		var val=$(this).val();
+		$('#'+target_id).html(val);
+	    });
+	});
+
+	cl_obj.find(".clone").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    var num=widget.new_ind();
+	    var new_section=widget._clone_section($("#"+target_id),num,"label"+num);
+	    widget.accordion.append(new_section);
+	    widget.accordion.accordion("refresh");
+	});
+	return cl_obj;
+
+    },
+    _new_section: function(cl_name,label){
+	var widget=this;
+	var cl_template_id=this.object_type+"-"+cl_name.replace(/\./g,"__");
+	var num=this.new_ind();
+	var section_id=this.object_type+'-'+num;
+	var html=this._new_section_html($("#"+cl_template_id),section_id,num,label);
+	var cl_obj=$(html);
+
+	cl_obj.find("#label_id").val(label);
+	cl_obj.find("#"+section_id+"-label").html(label);
+
+	cl_obj.find("#class_id").val(cl_name);
+	cl_obj.find(".delete").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    $("#"+target_id).remove();
+	    widget.accordion.accordion("refresh");
+	});
+	cl_obj.find(".trackchange").each(function(index){
+	    var target_id=$(this).data("target_id");
+	    $(this).find("input").change(function(event){
+		var val=$(this).val();
+		$('#'+target_id).html(val);
+	    });
+	});
+
+	cl_obj.find(".clone").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    var num=widget.new_ind();
+	    var new_section=widget._clone_section($("#"+target_id),num,"label"+num);
+	    widget.accordion.append(new_section);
+	    widget.accordion.accordion("refresh");
+	});
+
+	return cl_obj;
+    },
+    _add: function(cl_name,label){
+	var cl_obj=this._new_section(cl_name,label);
+	this.accordion.append(cl_obj);
+	this.accordion.accordion("refresh");
+	$("."+this.object_type+"listwidget").append('<option value="'+label+'">'+label+'</option>');
+    },
+    init: function(){
+	var widget=this;
+	this.panel.find("dialog.add").dialog({
+	    autoOpen: false,
+	    modal: true,
+	    width: "auto",
+	    buttons: {
+		Add: function() {
+		    var cl_name=$(this).find("#class_id").val();
+		    var label=$(this).find("#label_id").val();
+		    widget._add(cl_name,label);
+		    $(this).dialog( "close" );
+		},
+		Cancel: function() {
+		    $(this).dialog( "close" );
+		}
+	    }
+	});
+
+	this.panel.find(".open-dialog").click(function(event){
+	    event.preventDefault();
+	    var dialog_id=$(this).data("dialog_id");
+	    $("#"+dialog_id).dialog("open");
+	});
+
+	this.panel.find(".accordion")
+	    .accordion({
+		header: "> section > h3",
+		collapsible: true,
+		active: false,
+		heightStyle: "content"
+	    })
+	    .sortable({
+		axis: "y",
+		handle: "h3",
+		stop: function( event, ui ) {
+		    // IE doesn't register the blur when sorting
+		    // so trigger focusout handlers to remove .ui-state-focus
+		    ui.item.children( "h3" ).triggerHandler( "focusout" );
+		    
+		    // Refresh accordion to handle new order
+		    $( this ).accordion( "refresh" );
+		}
+	    });
+
+	this.panel.find(".delete").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    $("#"+target_id).remove();
+	    widget.accordion.accordion("refresh");
+	});
+
+	this.panel.find(".clone").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    var num=widget.new_ind();
+	    var new_section=widget._clone_section($("#"+target_id),num,"label"+num);
+	    widget.accordion.append(new_section);
+	    widget.accordion.accordion("refresh");
+	});
+
+	this.panel.find(".trackchange").each(function(index){
+	    var target_id=$(this).data("target_id");
+	    $(this).find("input").change(function(event){
+		var val=$(this).val();
+		$('#'+target_id).html(val);
+	    });
+	});
+
+    }
+};
+
+function FilterPanel(elem) {
+    this.panel=$(elem);
+    this.object_type=this.panel.data("object_type");
+    this.accordion=this.panel.find(".accordion").first();
+    this.section_ind=this.accordion.children().length-1;
+
+    this.filter_num=this.panel.data("filter_num");
+};
+
+FilterPanel.prototype = Object.create(Panel.prototype);
+FilterPanel.prototype.constructor = FilterPanel;
+
+FilterPanel.prototype._new_section_html=function(template,section_id,num,label){
+    var html=template.html();
+    html=html
+	.replace(/%%filternum%%/g,this.filter_num)
+	.replace(/%%num%%/g,num)
+	.replace(/%%label%%/g,label);
+    return '<section id="'+section_id+'" class="objectarea">'+html+'</section>';
+};
+
+FilterPanel.prototype._add=function(cl_name,label){
+    var cl_obj=this._new_section(cl_name,label);
+    this.accordion.append(cl_obj);
+    this.accordion.accordion("refresh");
+};
+
+
+function NormalizerPanel(panel_id) {
+    this.panel=$("#"+panel_id);
+    this.object_type=this.panel.data("object_type");
+    this.accordion=this.panel.find(".main-accordion").first();
+    this.section_ind=this.accordion.children().length-1;
+    this.filter_panels=[];
+    widget=this;
+    var fpanel;
+    this.panel.find(".filterarea").each(function(index){
+	fpanel=new FilterPanel(this);
+	widget.filter_panels.push(fpanel);
+    });
+
+};
+
+NormalizerPanel.prototype = {
+    new_ind: function(){
+	this.section_ind+=1;
+	return this.section_ind;
+    },
+    _new_section: function(cl_name,label){
+	var widget=this;
+	var cl_template_id=this.object_type+"-template";
+	var cl_template=$("#"+cl_template_id).html();
+	var num=this.new_ind();
+	var section_id=this.object_type+'-'+num;
+	cl_template=cl_template.replace(/%%num%%/g,num).replace(/%%label%%/g,label);
+	var pre='<section id="'+section_id+'" class="filterarea"';
+	pre+=' data-object_type="block" data-filter_num="'+num+'">';
+	cl_template=pre+cl_template+'</section>';
+	var cl_obj=$(cl_template);
+
+	cl_obj.find("#label_id").val(label);
+
+	cl_obj.find(".main-delete").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    $("#"+section_id).remove();
+	    widget.accordion.accordion("refresh");
+	});
+
+	return cl_obj;
+    },
+    _add: function(cl_name,label){
+	var cl_obj=this._new_section("",label);
+	this.accordion.append(cl_obj);
+	this.accordion.accordion("refresh");
+	filter_panel=new FilterPanel(cl_obj);
+	this.filter_panels.push(filter_panel);
+	filter_panel.init();
+    },
+    init: function(){
+	var widget=this;
+	this.panel.find("dialog.main-add").dialog({
+	    autoOpen: false,
+	    modal: true,
+	    width: "auto",
+	    buttons: {
+		Add: function() {
+		    var label=$(this).find("#label_id").val();
+		    widget._add("",label);
+		    $(this).dialog( "close" );
+		},
+		Cancel: function() {
+		    $(this).dialog( "close" );
+		}
+	    }
+	});
+
+	this.panel.find(".open-main-dialog").click(function(event){
+	    event.preventDefault();
+	    var dialog_id=$(this).data("dialog_id");
+	    $("#"+dialog_id).dialog("open");
+	});
+
+	this.panel.find(".main-delete").click(function(event){
+	    event.preventDefault();
+	    var target_id=$(this).data("target_id");
+	    $("#"+target_id).remove();
+	    widget.accordion.accordion("refresh");
+	});
+
+	this.panel.find(".main-accordion")
+	    .accordion({
+		header: "> section > h3",
+		collapsible: true,
+		active: false,
+		heightStyle: "content"
+
+	    })
+	    .sortable({
+		axis: "y",
+		handle: "h3",
+		stop: function( event, ui ) {
+		    // IE doesn't register the blur when sorting
+		    // so trigger focusout handlers to remove .ui-state-focus
+		    ui.item.children( "h3" ).triggerHandler( "focusout" );
+		    
+		    // Refresh accordion to handle new order
+		    $( this ).accordion( "refresh" );
+		}
+	    });
+
+	for(n=0;n<this.filter_panels.length;n++){
+	    this.filter_panels[n].init();
+	};
+
+    }
+};
+
+
+/*** ***/
+
+var sources = new Panel("sources");
+sources.init();
+
+var destinations = new Panel("destinations");
+destinations.init();
+
+var normalizer = new NormalizerPanel("normalizer");
+normalizer.init();
+
+$("#templates").hide();
+$(".tabs").tabs({"active": 0});
+
+$("table[data-field_type=proxy]").each(function(index){
+    var base=$(this);
+
+    var sel=$(this).find("select[name=type]").val();
+    $(this).find(".proxy_tbody").hide();
+    switch(sel){
+    case "environment": 
+	base.find(".proxy_tbody.environment").show();
+	break;
+    case "no proxy": 
+	base.find(".proxy_tbody.no_proxy").show();
+	break;
+    case "authenticate": 
+	base.find(".proxy_tbody.authenticate").show();
+	break;
+    case "non authenticate": 
+	base.find(".proxy_tbody.non_authenticate").show();
+	break;
+    }
+
+    $(this).find("select[name=type]").change(function(event){
+	var sel=$(this).val();
+	base.find(".proxy_tbody").hide();
+	switch(sel){
+	case "environment": 
+	    base.find(".proxy_tbody.environment").show();
+	    break;
+	case "no proxy": 
+	    base.find(".proxy_tbody.no_proxy").show();
+	    break;
+	case "authenticate": 
+	    base.find(".proxy_tbody.authenticate").show();
+	    break;
+	case "non authenticate": 
+	    base.find(".proxy_tbody.non_authenticate").show();
+	    break;
+	}
+
+    });
+    
+});
+
+function Configuration() {
+    this.section_parameters=$("#parameters-table");
+    this.section_sources=$("#sources");
+    this.section_destinations=$("#destinations");
+    this.section_normalizer=$("#normalizer");
+};
+
+Configuration.prototype = {
+    _get_value: function(elem) {
+	var field_type=$(elem).data("field_type");
+	if (field_type=="boolean") return $(elem).prop("checked");
+	if ( (field_type!="object")&&(field_type!="proxy") ) return $(elem).val();
+	var base=this;
+	var ret={}
+	
+	if (field_type=="object") {
+	    $(elem).find(".subfield").each(function(index){
+		var name=$(this).attr("name");
+		var value=base._get_value(this);
+		console.log(name,value);
+		switch($(this).data("field_type")){
+		case "number":
+		    ret[name]=Number(value);		
+		    break;
+		default:
+		    ret[name]=value;
+		}
+	    });
+	    return ret;
+	}
+
+	/** proxy qui **/
+
+	var sel=$(elem).find("select[name=type]").val();
+
+	$(elem).find(".subfield").each(function(index){
+	    var name=$(this).attr("name");
+	    switch(name) {
+	    case "type": break;
+	    case "exclude":
+		if (sel=="no proxy") return;
+		break;
+	    case "host":
+	    case "port":
+		if (sel=="no proxy") return;
+		if (sel=="environment") return;
+		break;
+	    case "password":
+	    case "username":
+		if (sel!="authenticate") return;
+		break;
+	    }
+
+	    var value=base._get_value(this);
+	    console.log(name,value);
+	    switch($(this).data("field_type")){
+	    case "number":
+		ret[name]=Number(value);		
+		break;
+	    default:
+		ret[name]=value;
+	    }
+	});
+
+	return ret;
+
+    },
+    _read_values: function(elem) {
+	var ret={};
+	var base=this;
+	elem.find(".field").each(function(index){
+	    var name=$(this).attr("name");
+	    var value=base._get_value(this);
+	    switch($(this).data("field_type")){
+	    case "number":
+		ret[name]=Number(value);		
+		break;
+	    default:
+		ret[name]=value;
+	    }
+	});
+	return ret;
+    },
+    load: function(){
+	var base=this;
+
+	var vals=this._read_values(this.section_parameters);
+	for (k in vals) this[k]=vals[k];
+
+	var sources=[];
+	this.section_sources.find(".objectarea").each(function(index){
+	    var src={};
+	    var vals=base._read_values($(this));
+	    sources.push(vals)
+	});
+	this["sources"]=sources;
+
+	var destinations=[];
+	this.section_destinations.find(".objectarea").each(function(index){
+	    var src={};
+	    var vals=base._read_values($(this));
+	    destinations.push(vals)
+	});
+	this["destinations"]=destinations;
+
+	var normalizer=[];
+	this.section_normalizer.find(".filterarea").each(function(index){
+	    var norm_filter=base._read_values($(this).find(".baseform").first());
+	    var blocks=[]
+	    $(this).find(".objectarea").each(function(index){
+		var src={};
+		var vals=base._read_values($(this));
+		blocks.push(vals)
+	    });
+	    norm_filter["filter"]=blocks;
+	    normalizer.push(norm_filter)
+	});
+	this["normalizer"]=normalizer;
+
+    },
+    _clean: function(key,value){
+	switch(key) {
+	case "section_parameters":
+	case "section_sources": 
+	case "section_destinations": 
+	case "section_normalizer": 
+	    return undefined;
+	default:
+	    return value;
+	}
+    },
+    stringify: function(){
+	return JSON.stringify(this,this._clean,4);
+    }
+}
+
+$("#download").click(function(event){
+    event.preventDefault();
+
+    //var body={};
+    //body=get_parameters(body);
+    var body=new Configuration();
+    body.load();
+
+    var filename=$("#file_name_id").val();
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json,' + encodeURIComponent(body.stringify()));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+
+});
+
+
+{% endblock script %}

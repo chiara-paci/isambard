@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<article id="database">
+
+  <h1>{{ section }}</h1>
+
+  <table>
+    <thead>
+      <tr>
+	<th>name</th>
+	<th>value</th>
+	<th>expires</th>
+	<th>path</th>
+	<th>port</th>
+	<th>version</th>
+	<th>secure</th>
+	<th>session</th>
+	<th>&nbsp;</th>
+      </tr>
+    </thead>
+
+    {% for cookie in cookiejar %}
+    <tbody>
+      <tr>
+	<th class="left">{{ cookie.name }}</th>
+	<td class="left">{{ cookie.value }}</td>
+	<td>{% if cookie.is_expired %}expired{% else %}
+	  {% if cookie.expires %}{{ cookie.expires }}{% else %}&nbsp;{% endif %}{% endif %}</td>
+	<td class="left">{{ cookie.path }}</td>
+	<td>{% if cookie.port %}{{ cookie.port }}{% endif %}</td>
+	<td>{{ cookie.version }}</td>
+	<td>{{ cookie.secure }}</td>
+	<td>{{ cookie.discard }}</td>
+	<td class="left">{% if cookie.comment %}{{ cookie.comment }} {% endif %}{% if cookie.comment_url %} [<a href="{{ cookie.comment_url }}">{{ cookie.comment_url}}</a>]{% endif %}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+
+</article>
+
+{% endblock content %}
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ locale }}" xml:lang="{{ locale }}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+
+  <link rel="icon" href="{{ static_url }}/img/logo-isambard.png?" type="image/png"/>
+  <link rel="stylesheet" type="text/css" href="{{ static_url }}/fontawesome-free-5.1.0-web/css/all.css"/>
+  <link rel="stylesheet" type="text/css" href="{{ static_url }}/jquery-ui/jquery-ui.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ static_url }}/css/isambard.css"/>
+
+  {% block addheader %}
+  {% endblock addheader %}
+
+</head>
+
+<body>
+  {% block body %}
+  <header>
+    <a href="/">
+      <img src="{{ static_url }}/img/isambard.svg"/>
+    </a>
+    <h1>{{ server_name }}</h1>
+    <aside>
+      <nav>
+	<a href="/"><i class="fa fa-home"></i>&nbsp; home</a>
+	<a href="/showlist"><i class="fa fa-play"></i>&nbsp; show list</a>
+	<a href="/pictures"><i class="fa fa-camera"></i>&nbsp; pictures</a>
+	<a href="/videos"><i class="fa fa-video"></i>&nbsp; videos</a>
+	<a href="/music"><i class="fa fa-music"></i>&nbsp; music</a>
+	<a href="/configurator"><i class="fa fa-sitemap"></i>&nbsp; configurator</a>
+	<!-- <a href="/info"><i class="fa fa-cogs"></i>&nbsp; run</a>
+	<a href="/output"><i class="fa fa-chart-area"></i>&nbsp;output</a>
+	<a href="/params">params</a> -->
+	<a href="/about"><i class="fa fa-paw"></i>&nbsp;about</a>
+      </nav>
+    </aside>
+  </header>
+
+
+  <main>
+    <!-- Page content -->
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer>
+     <section class="left">
+       {{ server_name }} {{ version }}<br/>
+     </section>
+     <section class="right">
+     <!--
+       <a href="/license"><img src="{{ static_url }}/img/gpl-v3-logo_st.svg"/></a>
+     -->
+       &copy; {{ copy_year }} <a href="{{ copy_url }}">{{ copy_name }}</a> 
+     </section>
+  </footer>
+  
+  {% endblock body %}
+
+  {% block mainscript %}
+
+  <script src="{{ static_url }}/luxon/luxon.min.js"></script>
+  <script src="{{ static_url }}/jquery/jquery-3.1.0.min.js"></script>
+  <script src="{{ static_url }}/jquery-ui/jquery-ui.min.js"></script>
+  <script src="{{ static_url }}/socket.io-client-master/dist/socket.io.js"></script>
+  <script src="{{ static_url }}/d3/d3.min.js"></script>
+  <script src="{{ static_url }}/js/common.js"></script>
+  <script src="{{ static_url }}/js/my_d3.js"></script>
+
+    {% block addscript %}{% endblock %}
+    
+    <script>//<![CDATA[    
+$(document).ready(function() {
+    
+    /*** Ajax Setup ***/
+    $.ajaxSetup({traditional: true}); 
+    
+    /*** page script ***/
+    
+    {% block script %}{% endblock script %}
+    
+    /*** end page script ***/
+    
+
+});
+
+//]]></script>
+
+    {% endblock mainscript %}
+
+
+</body>
+</html>
