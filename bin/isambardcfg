@@ -7,11 +7,11 @@ import argparse
 import os
 import sys
 import resource
-#import prctl
+import prctl
 import signal
 
-#prctl.set_name("isambard")
-#prctl.set_proctitle("isambard "+" ".join(sys.argv[1:]))
+prctl.set_name("isambard")
+prctl.set_proctitle("isambard "+" ".join(sys.argv[1:]))
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..") )
 
@@ -19,17 +19,12 @@ from isambard_lib import jsonlib
 jsonlib.json_settings()
 
 from isambard_lib import config,common
-from isambard_lib import channels,database,server,player
+from isambard_lib import channels,database,server
 
 ###
 
 parser = argparse.ArgumentParser(description="Data brocker")
 parser.add_argument('--version', action='version', version='%%(prog)s %s' % config.VERSION)
-
-parser.add_argument("-c", "--configuration-file", dest="conf_file", 
-                    type=str,
-                    help="configuration file (default: %s)" % config.CONFIG_FILE, 
-                    metavar="FILE")
 
 parser.add_argument("-p", "--port", dest="port", 
                     type=int,
@@ -41,27 +36,16 @@ parser.add_argument("-i", "--host", dest="host",
                     help="host to bind (default: %s)" % config.HOST,
                     metavar="IP")
 
+parser.add_argument("-c", "--configuration-file", dest="conf_file", 
+                    type=str,
+                    help="configuration file (default: %s)" % config.CONFIG_FILE, 
+                    metavar="FILE")
+
 parser.add_argument("-D", "--daemon", dest="daemon", action="store_const",const=True,
                     help="run in daemon mode")
 
 parser.add_argument("-S", "--no-daemon", dest="daemon", action="store_const",const=False,
                     help="don't run in daemon mode")
-
-parser.add_argument("-L", "--list", dest="list", action="store_const",const=True,
-                    help="list all playlists")
-
-parser.add_argument("playlist",
-                    type=str,
-                    help="playlist", 
-                    metavar="PLAYLIST")
-
-def clean_exit(*args,**kwargs):
-    try:
-        os.remove(config.PID_FILE)
-    except OSError as e:
-        pass
-    sys.exit(*args,**kwargs)
-
 
 if __name__ == '__main__':
     options=parser.parse_args()
@@ -70,21 +54,15 @@ if __name__ == '__main__':
 
     if os.path.exists(config.PID_FILE):
         print("Error: Pid file %s exists. Abort" % config.PID_FILE )
-        sys.exit(10)
+        sys.exit()
 
     config.setup_log()
     if config.DEBUG:
         common.log("Debug is enabled")
 
-    if config.LIST:
-        db=database.IsambardDatabase(options.conf_file)
-        for p in db.playlists:
-            print(p)
-        clean_exit()
-
     if config.DAEMON:
-        daemon_stdout=open(os.path.join(config.LOG_DIR,"isambard_stdout.log"),"w")
-        daemon_stderr=open(os.path.join(config.LOG_DIR,"isambard_stderr.log"),"w")
+        daemon_stdout=open(os.path.join(config.LOG_DIR,"stdout.log"),"w")
+        daemon_stderr=open(os.path.join(config.LOG_DIR,"stderr.log"),"w")
 
         core_resource = resource.RLIMIT_CORE
         resource.getrlimit(core_resource)
@@ -113,30 +91,21 @@ if __name__ == '__main__':
 
     def stop(signum,trace):
         print(signum)
-        clean_exit()
-        # try:
-        #     os.remove(config.PID_FILE)
-        # except OSError as e:
-        #     pass
-        # sys.exit()
+        try:
+            os.remove(config.PID_FILE)
+        except OSError as e:
+            pass
+        sys.exit()
 
-    def reconfig(signum,trace): 
-        print("reconfig")
-
-    signal.signal(signal.SIGHUP,reconfig)
     signal.signal(signal.SIGINT,stop)
     signal.signal(signal.SIGTERM,stop)
     signal.signal(signal.SIGQUIT,stop)
 
     db=database.IsambardDatabase(options.conf_file)
-
-    if options.playlist not in db.playlists:
-        print("Playlist \"%s\" doesn't exist" % options.playlist)
-        clean_exit(1)
-        #sys.exit(1)
-
     bus=channels.Bus()
-    player=player.IsambardPlayer(db,bus,options.playlist)
-    player.start()
-    clean_exit()
+    server=server.IsambardServer(db,bus,
+                                 host=config.HOST,
+                                 port=config.PORT)
+    server.start()
+
 

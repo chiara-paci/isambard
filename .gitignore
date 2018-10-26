@@ -6,3 +6,7 @@ old/*
 var/isambard/*
 sources/*
 brunel/*
+prove/
+upload.sh
+ffmpeg/
+venv/

@@ -84,7 +84,7 @@ class ListDictCollection(collections.abc.MutableSequence,abc.ABC):
     def __reversed__(self,*args,**kwargs): return self._objects.__reversed__(*args,**kwargs)
 
     def __contains__(self,*args,**kwargs): 
-        return self._objects.__contains__(*args,**kwargs) or self._by_key.contains(*args,**kwargs)
+        return self._objects.__contains__(*args,**kwargs) or self._by_key.__contains__(*args,**kwargs)
 
     def __setitem__(self,key,obj): 
         self._insert(key,obj)
@@ -131,4 +131,25 @@ class ObjectCollection(ListDictCollection,abc.ABC):
             if found: return obj
         return None
 
+class InfiniteLoop(object):
+    def __init__(self,collection):
+        self._collection=collection
+        self._iterator=iter(collection)
+        self._stop=False
+
+    def __iter__(self): return type(self)(self._collection)
+
+    def __next__(self):
+        # Guarantee StopIteration is raised on all subsequent calls 
+        # (see https://docs.python.org/3/library/stdtypes.html#typeiter)
+        if not self._collection: 
+            self._stop=True
+        if self._stop: raise StopIteration()
+        try:
+            ret=next(self._iterator)
+        except StopIteration as e:
+            self._iterator=iter(self._collection)
+            ret=next(self._iterator)
+        return ret
+        
 

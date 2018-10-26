@@ -113,7 +113,7 @@ class _Config(object):
 
     TEMPLATE_NAMES = {                           #: Template names
         "homepage":         "index.html",
-        "object_list":         "object_list.html",
+        "object_list":      "object_list.html",
         "418":              "418.html",
         "error":            "error.html",
         "text":             "text.html",
@@ -148,6 +148,7 @@ class _Config(object):
         self.LOCALE="it-IT"              #: Locale definition
         self.DEBUG=False
         self.DAEMON=True
+        self.LIST=False
 
         self.USER=pwd.getpwuid(os.getuid())
         self.GROUP=grp.getgrgid(os.getgid())
@@ -196,6 +197,9 @@ class _Config(object):
             self.HOST=options.host
         elif "host" in conf:
             self.HOST=conf["host"]
+
+        if options.list is not None:
+            self.LIST=options.list
 
         if options.daemon is not None:
             self.DAEMON=options.daemon
@@ -331,6 +335,9 @@ class _Config(object):
     def PICTURES_DIR(self): return self._db_rel("pictures")
 
     @property
+    def PLAYLISTS_DIR(self): return self._db_rel("playlists")
+
+    @property
     def VIDEOS_DIR(self): return self._db_rel("videos")
 
     @property
@@ -344,6 +351,5 @@ class _Config(object):
 
     @property
     def STATIC_DIR(self): return self._share_rel("static")                     #: Static dir
-
 
 sys.modules[__name__]=_Config()

@@ -3,11 +3,13 @@ import os.path
 
 from PIL import Image
 from PIL.ExifTags import TAGS,GPSTAGS
+#from pillow import Image
+#from pillow.ExifTags import TAGS,GPSTAGS
 import magic
 import exifread
 import datetime,dateutil.parser
 
-from isambard_lib import config,abstracts,common,configurator
+from isambard_lib import config,abstracts,common,configurator,jsonlib
 
 class Media(abc.ABC):
 
@@ -175,6 +177,23 @@ class MediaCollection(abstracts.ListDictCollection):
         self.name=name
         self.fields=[ "title", "date" ]+add_fields
 
+class Playlist(list):
+    def __init__(self,fpath):
+        list.__init__(self)
+        self._fpath=fpath
+        self._conf=jsonlib.json_load(self._fpath)
+        self.object_id=self._conf["label"]
+        self.title=self._conf["title"]
+        [ self.append(x) for x in self._conf["list"] ]
+
+    def __str__(self):
+        return "%s: %s" % (self.object_id,self.title)
+
+class PlaylistCollection(abstracts.ListDictCollection):
+    def __init__(self,name):
+        abstracts.ListDictCollection.__init__(self)
+        self.name=name
+
 class IsambardDatabase(object):
     def __init__(self,configuration_file):
         self._configuration_file=configuration_file
@@ -182,6 +201,7 @@ class IsambardDatabase(object):
         self.pictures=MediaCollection("Pictures",add_fields=["author","description","locality"])
         self.videos=MediaCollection("Videos")
         self.music=MediaCollection("Music",add_fields=["author","album"])
+        self.playlists=PlaylistCollection("Playlists")
 
         for entry in os.scandir(config.PICTURES_DIR):
             if not entry.is_file(): continue        
@@ -203,6 +223,12 @@ class IsambardDatabase(object):
             if entry.name.endswith(".thumb.jpeg"): continue
             fpath=os.path.join(config.MUSIC_DIR,entry.name)
             self.music.append(Music(entry.name,fpath))
+
+        for entry in os.scandir(config.PLAYLISTS_DIR):
+            if not entry.is_file(): continue        
+            if not entry.name.endswith(".json"): continue
+            fpath=os.path.join(config.PLAYLISTS_DIR,entry.name)
+            self.playlists.append(Playlist(fpath))
 
     def __str__(self): 
         return self._configuration_file
