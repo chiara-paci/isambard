@@ -15,6 +15,10 @@ prctl.set_proctitle("isambard "+" ".join(sys.argv[1:]))
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..") )
 
+## temp
+
+sys.path.append("/home/chiara/microdaemon")
+
 from isambard_lib import jsonlib
 jsonlib.json_settings()
 
@@ -37,6 +41,7 @@ parser.add_argument("-i", "--host", dest="host",
                     metavar="IP")
 
 parser.add_argument("-c", "--configuration-file", dest="conf_file", 
+                    default=config.CONFIG_FILE,
                     type=str,
                     help="configuration file (default: %s)" % config.CONFIG_FILE, 
                     metavar="FILE")
@@ -49,8 +54,10 @@ parser.add_argument("-S", "--no-daemon", dest="daemon", action="store_const",con
 
 if __name__ == '__main__':
     options=parser.parse_args()
+    options.list=None
     options.conf_file=os.path.abspath(options.conf_file)
     config.setup_config(options)
+
 
     if os.path.exists(config.PID_FILE):
         print("Error: Pid file %s exists. Abort" % config.PID_FILE )

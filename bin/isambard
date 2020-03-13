@@ -28,6 +28,7 @@ parser.add_argument('--version', action='version', version='%%(prog)s %s' % conf
 
 parser.add_argument("-c", "--configuration-file", dest="conf_file", 
                     type=str,
+                    default=config.CONFIG_FILE, 
                     help="configuration file (default: %s)" % config.CONFIG_FILE, 
                     metavar="FILE")
 
@@ -61,7 +62,6 @@ def clean_exit(*args,**kwargs):
     except OSError as e:
         pass
     sys.exit(*args,**kwargs)
-
 
 if __name__ == '__main__':
     options=parser.parse_args()

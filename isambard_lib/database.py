@@ -9,7 +9,9 @@ import magic
 import exifread
 import datetime,dateutil.parser
 
-from isambard_lib import config,abstracts,common,configurator,jsonlib
+from isambard_lib import config,common,configurator,jsonlib
+
+from microdaemon import abstracts
 
 class Media(abc.ABC):
 

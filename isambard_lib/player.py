@@ -7,7 +7,9 @@ pyglet.options['debug_gl'] = False
 pyglet.options['debug_media'] = False
 pyglet.options['debug_x11'] = False
 
-from . import abstracts,config
+from . import config
+
+from microdaemon import abstracts
 
 class PlayObjectCollection(abstracts.ObjectCollection): 
     def infinite(self): return abstracts.InfiniteLoop(self)

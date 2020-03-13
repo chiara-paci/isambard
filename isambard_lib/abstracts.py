@@ -102,6 +102,7 @@ class ListDictCollection(collections.abc.MutableSequence,abc.ABC):
         self._by_key.__delitem__(object_id)
 
 
+
 class ObjectCollection(ListDictCollection,abc.ABC):
     def __init__(self,conf):
         ListDictCollection.__init__(self)
