@@ -385,7 +385,6 @@ texgyrecursor-regular-webfont.eot
 .hide {
   display: none !important;
 }
-/* -- base style ----------------------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -420,6 +419,92 @@ textarea {
   /* For legacy (Firefox <29) Gecko based browsers */
   box-sizing: border-box;
 }
+.fas {
+  display: block;
+}
+dialog table {
+  font-size: 80%;
+  width: 100%;
+  margin: auto;
+}
+dialog table thead {
+  background-color: #ff9d4c;
+}
+dialog table thead th {
+  font-weight: 600;
+  color: #ffecdd;
+  vertical-align: bottom;
+}
+dialog table tbody th {
+  font-weight: 600;
+  color: #9b4600;
+  text-align: left;
+}
+dialog table tbody:nth-child(even) {
+  background-color: rgba(255, 223, 196, 0.4);
+}
+dialog table tbody:nth-child(odd) {
+  background-color: rgba(255, 223, 196, 0.9);
+}
+dialog table tbody:nth-child(even):hover {
+  background-color: rgba(65, 30, 2, 0.6);
+  color: white;
+}
+dialog table tbody:nth-child(odd):hover {
+  background-color: rgba(65, 30, 2, 0.7);
+  color: white;
+}
+dialog div.form {
+  padding: 1em;
+  border: 1px solid rgba(255, 157, 76, 0.2);
+  margin: auto;
+  background: white;
+}
+dialog div.form th {
+  max-width: 20vw;
+  text-align: right;
+  padding-right: 1em;
+}
+dialog div.form td {
+  padding: .5em;
+  text-align: left;
+}
+dialog div.form input {
+  width: 100%;
+  height: 1.2em;
+  vertical-align: middle;
+}
+dialog div.form input[type=checkbox] {
+  width: auto;
+}
+dialog div.form select {
+  width: 100%;
+}
+dialog div.form select[multiple] {
+  min-height: 10em;
+}
+div.error {
+  width: 70%;
+  display: block;
+  position: relative;
+  padding: 2em;
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border: 1px solid #ffae6b;
+  color: #ffae6b;
+  margin: auto;
+  font-style: italic;
+  font-size: 1.2em;
+  background-color: rgba(255, 223, 196, 0.2);
+}
+div.error .fas {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 2em;
+  padding-right: .4em;
+}
+/* -- base style ----------------------------------------------------------- */
 body {
   font-family: 'OpenSans', 'Arial', sans-serif;
   letter-spacing: -0.01em;
@@ -437,9 +522,6 @@ body {
   align-items: stretch;
   align-content: stretch;
   justify-content: space-between;
-}
-.fas {
-  display: block;
 }
 /* -- page layout ----------------------------------------------------------- */
 header {
@@ -660,7 +742,6 @@ main {
   align-items: stretch;
   align-content: stretch;
   justify-content: space-between;
-  /* div.tabs */
 }
 @media (max-width: 200px) {
   main {
@@ -779,45 +860,6 @@ main section.text section.logo aside {
   flex-shrink: 0;
   flex-basis: auto;
 }
-main article#configurator {
-  order: 2;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  align-content: stretch;
-  justify-content: stretch;
-}
-main article#configurator nav {
-  text-align: left;
-  margin: 1em;
-}
-main article#configurator nav a {
-  cursor: pointer;
-  padding: .5em;
-  text-decoration: none;
-  border-radius: 2em;
-  -moz-border-radius: 2em;
-  -webkit-border-radius: 2em;
-  padding-left: 1em;
-  padding-right: 1em;
-  font-size: .8em;
-}
-main article#configurator nav .ui-state-active a,
-main article#configurator nav a:active,
-main article#configurator nav a:hover {
-  background-color: #ffffff;
-  color: #ff9d4c;
-}
-main article#configurator nav a {
-  background-color: #ff9d4c;
-  color: #ffffff;
-}
 main article#database {
   margin: .5vw;
   padding: .5vw;
@@ -887,6 +929,9 @@ main article#database table tbody th {
   color: #9b4600;
   text-align: left;
 }
+main article#database table tbody td img.thumbnail {
+  max-height: 85px;
+}
 main article#database table tbody:nth-child(even) {
   background-color: rgba(255, 223, 196, 0.4);
 }
@@ -900,305 +945,6 @@ main article#database table tbody:nth-child(even):hover {
 main article#database table tbody:nth-child(odd):hover {
   background-color: rgba(65, 30, 2, 0.7);
   color: white;
-}
-main div.tabs {
-  border: none;
-  padding: 0;
-  border-radius: 0;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  /* section.index */
-}
-main div.tabs section.panel {
-  border: 1px solid rgba(155, 70, 0, 0.2);
-  min-height: 90vh;
-  padding-left: 1vw;
-  padding-right: 1vw;
-  /* table.agent-log */
-}
-main div.tabs section.panel div.form {
-  padding: 1em;
-  border: 1px solid #9b4600;
-  margin: auto;
-}
-main div.tabs section.panel div.form th {
-  max-width: 20vw;
-  text-align: right;
-  padding-right: 1em;
-}
-main div.tabs section.panel div.form td {
-  padding: .5em;
-  text-align: left;
-}
-main div.tabs section.panel div.form td table {
-  font-size: 1em;
-  width: 100%;
-}
-main div.tabs section.panel div.form td table tbody,
-main div.tabs section.panel div.form td table thead {
-  background-color: transparent;
-}
-main div.tabs section.panel div.form td table td,
-main div.tabs section.panel div.form td table th {
-  padding: 0;
-}
-main div.tabs section.panel div.form td table th {
-  width: 5vw;
-  padding-right: 1em;
-}
-main div.tabs section.panel div.form input {
-  width: 100%;
-  height: 1.2em;
-  vertical-align: middle;
-}
-main div.tabs section.panel div.form input[type=checkbox] {
-  width: auto;
-}
-main div.tabs section.panel div.form select {
-  width: 100%;
-}
-main div.tabs section.panel div.form select[multiple] {
-  min-height: 10em;
-}
-main div.tabs section.panel ol {
-  margin-left: 4em;
-  margin-bottom: 2em;
-}
-main div.tabs section.panel h1 {
-  width: 100%;
-  background-color: #ffae6b;
-  color: white;
-  padding: .5em;
-  padding-top: .2em;
-  padding-bottom: .2em;
-  margin-bottom: 1em;
-}
-main div.tabs section.panel .subtabs h1 {
-  color: #ffae6b;
-  background: none;
-  border-bottom: 1px solid #ffae6b;
-}
-main div.tabs section.panel .subtabs .subtitle {
-  text-align: right;
-  font-style: italic;
-  font-size: .8em;
-  color: #ffae6b;
-  width: 100%;
-  padding: 0;
-}
-main div.tabs section.panel .subtabs .status {
-  text-align: left;
-}
-main div.tabs section.panel div.error {
-  width: 50%;
-  display: block;
-  position: relative;
-  padding: 2em;
-  border-radius: 1em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
-  border: 1px solid #ffae6b;
-  color: #ffae6b;
-  margin: auto;
-  font-style: italic;
-  background-color: rgba(255, 223, 196, 0.2);
-}
-main div.tabs section.panel nav {
-  text-align: left;
-  margin-bottom: 1em;
-}
-main div.tabs section.panel nav a {
-  padding: .5em;
-  text-decoration: none;
-  border-radius: 2em;
-  -moz-border-radius: 2em;
-  -webkit-border-radius: 2em;
-  padding-left: 1em;
-  padding-right: 1em;
-  font-size: .8em;
-}
-main div.tabs section.panel nav .ui-state-active a,
-main div.tabs section.panel nav a:active,
-main div.tabs section.panel nav a:hover {
-  background-color: #ffffff;
-  color: #ffae6b;
-}
-main div.tabs section.panel nav a {
-  background-color: #ffae6b;
-  color: #ffffff;
-}
-main div.tabs section.panel div.tabs {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-main div.tabs section.panel table.multiple th,
-main div.tabs section.panel table.multiple td {
-  vertical-align: top;
-}
-main div.tabs section.panel table.multiple tbody tr {
-  border-bottom: 1px dotted rgba(255, 157, 76, 0.2);
-}
-main div.tabs section.panel table.multiple tbody tr:last-of-type {
-  border-bottom: none;
-}
-main div.tabs section.panel table.multiple .faicon i {
-  vertical-align: top !important;
-  padding-top: .2em;
-}
-main div.tabs section.panel table {
-  font-size: 80%;
-  width: 100%;
-  margin: auto;
-}
-main div.tabs section.panel table .faicon i {
-  font-size: 1.5em;
-  vertical-align: middle !important;
-  color: #ff9d4c;
-}
-main div.tabs section.panel table .checkbox {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  margin: .2em .2em;
-  position: relative;
-}
-main div.tabs section.panel table .checkbox label {
-  cursor: pointer;
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 0;
-  left: 0;
-  background: #ffecdd;
-  border: 1px solid #ff9d4c;
-}
-main div.tabs section.panel table .checkbox label:after {
-  opacity: 0;
-  font-family: FontAwesome;
-  font-size: 9pt;
-  vertical-align: middle;
-  content: "\f00c";
-  color: #ff9d4c;
-  position: absolute;
-  background: transparent;
-  top: -4px;
-  left: 0px;
-}
-main div.tabs section.panel table .checkbox label:hover::after {
-  opacity: 0.5;
-}
-main div.tabs section.panel table .checkbox input[type=checkbox]:checked + label:after {
-  opacity: 1;
-}
-main div.tabs section.panel table thead {
-  background-color: #ff9d4c;
-}
-main div.tabs section.panel table thead th {
-  font-weight: 600;
-  color: #ffecdd;
-  vertical-align: bottom;
-}
-main div.tabs section.panel table tbody th {
-  font-weight: 600;
-  color: #9b4600;
-  text-align: left;
-}
-main div.tabs section.panel table tbody:nth-child(even) {
-  background-color: rgba(255, 223, 196, 0.4);
-}
-main div.tabs section.panel table tbody:nth-child(odd) {
-  background-color: rgba(255, 223, 196, 0.9);
-}
-main div.tabs section.panel table tbody:nth-child(even):hover {
-  background-color: rgba(65, 30, 2, 0.6);
-  color: white;
-}
-main div.tabs section.panel table tbody:nth-child(odd):hover {
-  background-color: rgba(65, 30, 2, 0.7);
-  color: white;
-}
-dialog table {
-  font-size: 80%;
-  width: 100%;
-  margin: auto;
-}
-dialog table thead {
-  background-color: #ff9d4c;
-}
-dialog table thead th {
-  font-weight: 600;
-  color: #ffecdd;
-  vertical-align: bottom;
-}
-dialog table tbody th {
-  font-weight: 600;
-  color: #9b4600;
-  text-align: left;
-}
-dialog table tbody:nth-child(even) {
-  background-color: rgba(255, 223, 196, 0.4);
-}
-dialog table tbody:nth-child(odd) {
-  background-color: rgba(255, 223, 196, 0.9);
-}
-dialog table tbody:nth-child(even):hover {
-  background-color: rgba(65, 30, 2, 0.6);
-  color: white;
-}
-dialog table tbody:nth-child(odd):hover {
-  background-color: rgba(65, 30, 2, 0.7);
-  color: white;
-}
-dialog div.form {
-  padding: 1em;
-  border: 1px solid rgba(255, 157, 76, 0.2);
-  margin: auto;
-  background: white;
-}
-dialog div.form th {
-  max-width: 20vw;
-  text-align: right;
-  padding-right: 1em;
-}
-dialog div.form td {
-  padding: .5em;
-  text-align: left;
-}
-dialog div.form input {
-  width: 100%;
-  height: 1.2em;
-  vertical-align: middle;
-}
-dialog div.form input[type=checkbox] {
-  width: auto;
-}
-dialog div.form select {
-  width: 100%;
-}
-dialog div.form select[multiple] {
-  min-height: 10em;
-}
-div.error {
-  width: 70%;
-  display: block;
-  position: relative;
-  padding: 2em;
-  border-radius: 1em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
-  border: 1px solid #ffae6b;
-  color: #ffae6b;
-  margin: auto;
-  font-style: italic;
-  font-size: 1.2em;
-  background-color: rgba(255, 223, 196, 0.2);
-}
-div.error .fas {
-  display: inline-block;
-  vertical-align: middle;
-  font-size: 2em;
-  padding-right: .4em;
 }
 .ui-widget-header {
   background: rgba(255, 157, 76, 0.6);
